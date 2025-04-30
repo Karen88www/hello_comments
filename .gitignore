@@ -1,0 +1,6 @@
+venv/
+data/comments/df_1.csv
+data/comments/df_2.csv
+data/comments/df_3.csv
+data/comments/df_w.csv
+.env
