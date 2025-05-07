@@ -1,6 +1,6 @@
-venv/
-data/comments/df_1.csv
-data/comments/df_2.csv
-data/comments/df_3.csv
-data/comments/df_w.csv
+venv
+comments_data
+data
 .env
+data.zip
+__pycache__/
