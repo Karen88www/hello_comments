@@ -1,6 +1,7 @@
-venv
-comments_data
-data
+venv/
+data/
 .env
 data.zip
 __pycache__/
+comments_data/
+transcripts/
