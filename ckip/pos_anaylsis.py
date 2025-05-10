@@ -292,6 +292,52 @@ def count_Nh(ckip_data):
 
     return ckip_data
 
+def count_adj(ckip_data):
+    print("-" *100)
+    print(">>> 計算形容詞")
+
+    ckip_data['adj_tag'] = None
+    ckip_data['adj_count'] = None
+
+    for idx, row in ckip_data.iterrows():
+        print(f"\n>>> {idx + 1} / {len(ckip_data)}")
+        print("text:", row['cleaned_text'])
+
+        if pd.isna(row['cleaned_text']):
+            print(f">>> 第 {idx + 1} 筆資料是 NaN，跳過")
+            continue
+
+        pos = row['pos']
+        ws = row['ws']
+
+        if 'Nh' not in pos:
+            print(">>> 沒有 Nh，跳過")
+            ckip_data.at[idx,'adj_count'] = 0
+            ckip_data.at[idx, 'adj_tag'] = []
+            continue
+
+        adj_indices = [i for i, p in enumerate(pos) if p == 'A']
+        adj_words = [ws[i] for i in adj_indices]
+
+        # 統計每個 Nh 詞的出現次數
+        adj_count = Counter(adj_words)
+        adj_list = []
+
+        for i in adj_indices:
+            word = ws[i]
+            pair = (word, 'A', adj_count[word]) 
+            print(f">>> pair: {pair}")
+            adj_list.append(pair)
+
+        # 寫入欄位
+        ckip_data.at[idx, 'adj_count'] = f"{len(adj_count)}/{len(row['pos'])}"
+        ckip_data.at[idx, 'adj_tag']=adj_list
+
+    ckip_data.to_csv('comments_data/comments/adj_count.csv', index=False)
+
+
+
+
 
 # 主程式
 if __name__ == "__main__":
@@ -306,13 +352,27 @@ if __name__ == "__main__":
     
 
     # # step 3 process ckip
-    comment_drop = pd.read_csv('comments_data/comments/cleaned_comments.csv')
-    ckip_data = process_ckip(comment_drop)
+    # comment_drop = pd.read_csv('comments_data/comments/cleaned_comments.csv')
+    # ckip_data = process_ckip(comment_drop)
 
     # # step 4 count pos: nh 代名詞
     # ckip_data = pd.read_csv('comments_data/comments/ckip_comments.csv')
-    ckip_converted = convert_str_columns(ckip_data, ['ws', 'pos'])
-    ckip_nh = count_Nh(ckip_converted)
+    # ckip_converted = convert_str_columns(ckip_data, ['ws', 'pos'])
+    # ckip_nh = count_Nh(ckip_converted)
 
-    # # step 5 count other pos
+    ckip_nh = pd.read_csv('comments_data/comments/nh_comments_count.csv')
+    ckip_adj = count_adj(ckip_nh)
+    print(ckip_adj.head(3))
+
+
+
+    
+    # nh_spreadsheet = ckip_nh[['video_title', 'comment_text', 'author_name','comment_type', 'comment_code','nh_count', 'first_nh', 'second_nh', 'third_nh', 'other_nh']]
+    # print(nh_spreadsheet.head(2))
+    # nh_spreadsheet.to_csv('comments_data/comments/nh_spreadsheet.csv', index=False)
+
+    # step 5 count adj, adv
+
+
+    
 
